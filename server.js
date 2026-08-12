@@ -1,24 +1,43 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const connectDB = require("./config/db");
-const cors = require("cors");
-
-
+import dotenv from "dotenv";
 
 dotenv.config();
-const app = express();
-app.use(cors());
 
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+console.log(
+    "OpenAI key loaded:",
+    process.env.OPENAI_API_KEY ? "YES" : "NO"
+);
+
+import express from "express";
+import cors from "cors";
+import connectDB from "./config/db.js";
+
+// ROUTES (all ES Modules)
+import authRoutes from "./routes/authRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
+import serviceRoutes from "./routes/serviceRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
+
+const app = express();
+
+// Middleware
+app.use(cors());
 app.use(express.json());
 
 // Connect to DB
 connectDB();
 
-
 // Routes
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/services", require("./routes/serviceRoutes"));
-app.use("/api/bookings", require("./routes/bookingRoutes"));
-app.use("/api/ai", require("./routes/aiRoutes"));
+app.use("/api/auth", authRoutes);
+app.use("/api/services", serviceRoutes);
+app.use("/api/bookings", bookingRoutes);
+app.use("/api/ai", aiRoutes);
 
+// Start server
 app.listen(5000, () => console.log("Server running on port 5000"));

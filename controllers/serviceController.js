@@ -1,21 +1,45 @@
-const Service = require("../models/Service");
+import Service from "../models/Service.js";
 
-exports.createService = async (req, res) => {
-    const service = await Service.create(req.body);
-    res.json(service);
+export const createService = async (req, res) => {
+    try {
+        const service = await Service.create(req.body);
+        res.status(201).json(service);
+    } catch (error) {
+        console.error("Create Service Error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
 };
 
-exports.getServices = async (req, res) => {
-    const services = await Service.find();
-    res.json(services);
+export const getServices = async (req, res) => {
+    try {
+        const services = await Service.find();
+        res.json(services);
+    } catch (error) {
+        console.error("Get Services Error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
 };
 
-exports.updateService = async (req, res) => {
-    const updated = await Service.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updated);
+export const updateService = async (req, res) => {
+    try {
+        const updated = await Service.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true }
+        );
+        res.json(updated);
+    } catch (error) {
+        console.error("Update Service Error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
 };
 
-exports.deleteService = async (req, res) => {
-    await Service.findByIdAndDelete(req.params.id);
-    res.json({ message: "Service deleted" });
+export const deleteService = async (req, res) => {
+    try {
+        await Service.findByIdAndDelete(req.params.id);
+        res.json({ message: "Service deleted" });
+    } catch (error) {
+        console.error("Delete Service Error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
 };
